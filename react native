@@ -1,0 +1,56 @@
+jsx
+import React, { useState } from 'react';
+import { View, Text, TextInput, ScrollView, Button, StyleSheet } from 'react-native';
+
+export default function GridInterface() {
+  const [gridData, setGridData] = useState(Array(10).fill(Array(5).fill('')));
+
+  const handleInputChange = (rowIndex, colIndex, text) => {
+    const updatedData = [...gridData];
+    updatedData[rowIndex][colIndex] = text;
+    setGridData(updatedData);
+  };
+// Render the grid and input fields here
+
+  return (
+    <ScrollView contentContainerStyle={styles.container}>
+      {/* Render the grid here */}
+      <Button title="Download Excel" onPress={handleDownloadExcel} />
+    </ScrollView>
+  );
+}
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    padding: 16,
+  },
+  // Define styles for the grid and input fields here
+});
+jsx
+import { AsyncStorage } from 'react-native';
+
+// Function to save gridData to AsyncStorage
+const saveGridData = async (data) => {
+  try {
+    await AsyncStorage.setItem('gridData', JSON.stringify(data));
+  } catch (error) {
+    console.error('Error saving data:', error);
+  }
+};
+
+// Function to load gridData from AsyncStorage
+const loadGridData = async () => {
+  try {
+    const data = await AsyncStorage.getItem('gridData');
+    if (data !== null) {
+      return JSON.parse(data);
+    }
+    return Array(10).fill(Array(5).fill(''));
+  } catch (error) {
+    console.error('Error loading data:', error);
+    return Array(10).fill(Array(5).fill(''));
+  }
+};
+
+// Use these functions in your GridInterface component
